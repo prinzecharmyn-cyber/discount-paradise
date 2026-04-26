@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Paradise – Interactive Hub</title>
+    <style>
+        /* ---------- Reset & Base ---------- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            scroll-behavior: smooth;
+            transition: background 0.3s;
+        }
+
+        /* ---------- Glassmorphism Container ---------- */
+        .main-card {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            transition: transform 0.2s;
+        }
+
+        /* ---------- Header ---------- */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .title-block h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .rating span {
+            color: #f1c40f;
+        }
+
+        .open-badge {
+            background: rgba(46, 204, 113, 0.25);
+            color: #2ecc71;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* ---------- Map Section ---------- */
+        .map-container {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 320px;
+            border: none;
+            display: block;
+        }
+
+        /* ---------- Info Grid ---------- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.12);
+            transition: transform 0.25s, background 0.25s;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.11);
+            transform: translateY(-4px);
+        }
+
+        .glass-panel h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .glass-panel p {
+            line-height: 1.5;
+            opacity: 0.85;
+        }
+
+        /* ---------- Comments Section ---------- */
+        .comments-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .comments-header h2 {
+            font-size: 1.9rem;
+            font-weight: 600;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .comment-input-area input {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 18px;
+            border-radius: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .comment-input-area input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .comment-input-area input:focus {
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 0 2px #a18cd1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            border: none;
+            padding: 12px 26px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #1e1e2f;
+            cursor: pointer;
+            transition: 0.25s;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(161, 140, 209, 0.35);
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 22px rgba(161, 140, 209, 0.55);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .comments-list {
+            margin-top: 18px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* custom scrollbar */
+        .comments-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .comments-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .comments-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+        }
+
+        .comment-bubble {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 18px;
+            padding: 14px 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comment-bubble .name {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fbc2eb;
+        }
+
+        .comment-bubble .text {
+            opacity: 0.9;
+            word-break: break-word;
+        }
+
+        .comment-bubble .time {
+            font-size: 0.75rem;
+            opacity: 0.55;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* ---------- Footer / Associate ---------- */
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            gap: 15px;
+        }
+
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 211, 102, 0.18);
+            color: #25d366;
+            padding: 10px 22px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+            box-shadow: 0 0 0 1px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover {
+            background: rgba(37, 211, 102, 0.28);
+        }
+
+        .location-text {
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 550px) {
+            .main-card {
+                padding: 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .comment-input-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Glass Card -->
+    <div class="main-card">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title-block">
+                <h1>Discount Paradise</h1>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div class="rating"><span>★★★★★</span> 5.0</div>
+                    <div class="open-badge">🕒 Open 24 Hours</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GOOGLE MAPS -->
+        <div class="map-container">
+            <!-- Using the plus code from the provided short URL -->
+            <iframe
+                src="https://www.google.com/maps?q=9JX6%2BX2X+University+of+Benin,+Ugbowo+campus&output=embed"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Discount Paradise Location">
+            </iframe>
+        </div>
+
+        <!-- BUSINESS DETAILS + ASSOCIATE PANEL -->
+        <div class="info-grid">
+            <div class="glass-panel">
+                <h3>📍 Address</h3>
+                <p>University of Benin, Ugbowo Campus<br>Ovia, Benin City 300103<br>Edo, Nigeria</p>
+            </div>
+            <div class="glass-panel">
+                <h3>📞 Contact</h3>
+                <p><strong>Phone:</strong> +234 701 100 3738</p>
+                <p style="margin-top: 6px;"><strong>WhatsApp:</strong> <a href="https://chat.whatsapp.com" target="_blank" style="color:#25d366;">Chat with us</a></p>
+            </div>
+            <div class="glass-panel">
+                <h3>🤝 Associate With Us</h3>
+                <p>Interested in collaborating or stocking your products? Reach out via WhatsApp or drop a comment below. We're always open to partnerships!</p>
+            </div>
+        </div>
+
+        <!-- COMMENTS SECTION -->
+        <div>
+            <div class="comments-header">
+                <h2>💬 Comments</h2>
+                <button class="btn" id="refreshCommentsBtn">Refresh</button>
+            </div>
+
+            <!-- Comment form -->
+            <div class="comment-form">
+                <div class="comment-input-area">
+                    <input type="text" id="visitorName" placeholder="Your name" maxlength="40" />
+                    <input type="text" id="commentText" placeholder="Write a comment..." maxlength="300" />
+                </div>
+                <button class="btn" id="submitCommentBtn" style="align-self: flex-start;">Post Comment</button>
+            </div>
+
+            <!-- Comments display -->
+            <div class="comments-list" id="commentsContainer">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <span class="location-text">📍 9JX6+X2X, Ugbowo Campus</span>
+            <a href="https://chat.whatsapp.com" target="_blank" class="whatsapp-btn">
+                <span>💬</span> Associate on WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Modular, CDN) -->
+    <script type="module">
+        // ---------- FIREBASE CONFIGURATION ----------
+        // IMPORTANT: Replace the values below with your own Firebase project settings.
+        // 1. Go to https://console.firebase.google.com/
+        // 2. Create a new project (or use an existing one).
+        // 3. Register a web app and copy the config.
+        // 4. In Firebase Console → Authentication → Sign-in method, enable "Anonymous".
+        // 5. In Firebase Console → Realtime Database, create a database and set rules to:
+        //    {
+        //      "rules": {
+        //        ".read": true,
+        //        ".write": true
+        //      }
+        //    }
+        //    (For production, tighten the rules.)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2wz5z5z5z5z5z5z5z5z5z5z5z5z5z5",
+            authDomain: "discount-paradise-XXXX.firebaseapp.com",
+            databaseURL: "https://discount-paradise-XXXX-default-rtdb.firebaseio.com",
+            projectId: "discount-paradise-XXXX",
+            storageBucket: "discount-paradise-XXXX.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13/firebase-app.js';
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13/firebase-database.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.13/firebase-auth.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Sign in anonymously
+        signInAnonymously(auth)
+            .then(() => {
+                console.log('Anonymous sign-in successful');
+                enableCommentSubmission();
+            })
+            .catch((error) => {
+                console.error('Anonymous sign-in error:', error);
+                alert('Could not connect to the comment service. Please try again later.');
+            });
+
+        // ---------- DOM ELEMENTS ----------
+        const commentsContainer = document.getElementById('commentsContainer');
+        const submitBtn = document.getElementById('submitCommentBtn');
+        const refreshBtn = document.getElementById('refreshCommentsBtn');
+        const nameInput = document.getElementById('visitorName');
+        const commentInput = document.getElementById('commentText');
+
+        // ---------- LISTEN FOR NEW COMMENTS (Real-time) ----------
+        const commentsRef = ref(database, 'comments');
+
+        onChildAdded(commentsRef, (snapshot) => {
+            const comment = snapshot.val();
+            if (comment) {
+                addCommentToDOM(comment.name, comment.text, comment.timestamp);
+            }
+        });
+
+        // ---------- ADD COMMENT TO DOM ----------
+        function addCommentToDOM(name, text, timestamp) {
+            const bubble = document.createElement('div');
+            bubble.className = 'comment-bubble';
+
+            const timeStr = timestamp
+                ? new Date(timestamp).toLocaleString()
+                : new Date().toLocaleString();
+
+            bubble.innerHTML = `
+                <div class="name">${escapeHTML(name) || 'Anonymous'}</div>
+                <div class="text">${escapeHTML(text)}</div>
+                <div class="time">${timeStr}</div>
+            `;
+
+            commentsContainer.appendChild(bubble);
+            // auto-scroll to the latest comment
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        }
+
+        // Simple escape function to prevent XSS
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // ---------- SUBMIT COMMENT ----------
+        function enableCommentSubmission() {
+            submitBtn.addEventListener('click', () => {
+                const name = nameInput.value.trim();
+                const text = commentInput.value.trim();
+
+                if (!text) {
+                    alert('Please write a comment.');
+                    return;
+                }
+
+                const finalName = name || 'Anonymous';
+
+                // Push to Firebase Realtime Database
+                push(commentsRef, {
+                    name: finalName,
+                    text: text,
+                    timestamp: Date.now()
+                })
+                    .then(() => {
+                        console.log('Comment posted!');
+                        nameInput.value = '';
+                        commentInput.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Error posting comment:', error);
+                        alert('Failed to post comment. Please try again.');
+                    });
+            });
+
+            // Manual refresh (re-fetches are not needed because onChildAdded keeps updating,
+            // but this button can be used to re-render all if needed.
+            refreshBtn.addEventListener('click', () => {
+                commentsContainer.innerHTML = '';
+                // The onChildAdded listener will automatically re-populate comments as they come.
+                // For a full reset, you could also fetch all once, but real-time is smoother.
+                // We'll simply inform the user.
+                alert('Comments will refresh automatically as they arrive.');
+            });
+        }
+    </script>
+</body>
+</html>
